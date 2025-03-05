@@ -1,13 +1,13 @@
 from typing import Any
 
 import psycopg2
-
+import psycopg2.extras
 
 class Database:
     def __init__(self) -> None:
         self.__con: psycopg2.connect = psycopg2.connect(host="localhost", dbname="job_hunter", user="postgres",
                                                         password="123", port=5432)
-        self.__cur: psycopg2.cursor = self.__con.cursor()
+        self.__cur: psycopg2.cursor = self.__con.cursor(cursor_factory=psycopg2.extras.DictCursor)
         self.setup_database()
 
     def setup_database(self) -> None:
@@ -26,12 +26,12 @@ class Database:
         for job_info in job_list:
             self.__cur.execute("""
                 INSERT INTO job_available(name, description, company, type, published_date, dead_line_date, is_remote, url)
-                SELECT %(name)s, %(description)s, %(company)s, %(type)s, %(published_date)s, %(dead_line_date)s, %(is_remote)s, %(url)s
+                SELECT %(name)s, %(description)s, %(careerPageName)s, %(type)s, %(publishedDate)s, %(applicationDeadline)s, %(isRemoteWork)s, %(jobUrl)s
                 WHERE NOT EXISTS (
                     SELECT 1 FROM job_available 
-                    WHERE name = %(name)s AND company = %(company)s AND published_date = %(published_date)s
+                    WHERE url = %(jobUrl)s
                 )
-                RETURNING name, description;
+                RETURNING name, is_remote, published_date, company, url;
             """, job_info)
             current_result: dict[str, str] = self.__cur.fetchone()
             if current_result:

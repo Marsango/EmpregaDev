@@ -5,7 +5,7 @@ import requests
 
 
 class GupyScraper:
-    def __int__(self):
+    def __int__(self) -> None:
         pass
 
     def search_available_jobs_offers(self, start_date: datetime.date, remote: bool, job_name: str) -> list[dict[str, Any]]:
