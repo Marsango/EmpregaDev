@@ -1,9 +1,9 @@
-jobs_names: list[str] = ["Júnior"
+jobs_names: list[str] = ["Programador",
                          "Jr",
                          "Estágio",
                          "Desenvolvedor",
                          "Estagiário",
-                         "Programador",
+                         "Python",
                          "Software",
                          "backend",
                          "back-end",
@@ -14,6 +14,13 @@ jobs_names: list[str] = ["Júnior"
                          "Analista",
                          "Django",
                          "Scraping",
-                         ]  # put your job names here
+                         "Engenheiro",
+                         "Júnior",
+                         "Back end",
+                         ]
 
 remote = True
+LINKEDIN_EMAIL = "YOUREMAILHERE" #linkedin email
+LINKEDIN_PASSWORD = "YOURPASSWORDHERE" #linkedin password
+api_key_telegram = "YOURAPIKEYHERE"
+channel_id = "YOURCHANNELIDHERE"

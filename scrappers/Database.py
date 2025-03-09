@@ -1,7 +1,7 @@
 from typing import Any
-
 import psycopg2
 import psycopg2.extras
+
 
 class Database:
     def __init__(self) -> None:
@@ -14,27 +14,39 @@ class Database:
         self.__cur.execute(
             "CREATE TABLE IF NOT EXISTS job_available(id SERIAL PRIMARY KEY, name varchar(255), description text,"
             "company varchar(255), type varchar(255), published_date date, dead_line_date date, is_remote boolean,"
-            "url varchar(400))")
+            "url text, website varchar(255), job_id varchar(255))")
         self.__cur.execute(
             "CREATE TABLE IF NOT EXISTS past_available_job(id SERIAL PRIMARY KEY, name varchar(255), description text,"
             "company varchar(255), type varchar(255), published_date date, dead_line_date date, is_remote boolean,"
-            "url varchar(400))")
+            "url text, website varchar(255), job_id varchar(255))")
         self.__con.commit()
 
     def insert_new_jobs(self, job_list: list[dict[str, Any]]) -> list[dict[str, str]]:
         new_jobs: list[dict[str, str]] = []
         for job_info in job_list:
             self.__cur.execute("""
-                INSERT INTO job_available(name, description, company, type, published_date, dead_line_date, is_remote, url)
-                SELECT %(name)s, %(description)s, %(careerPageName)s, %(type)s, %(publishedDate)s, %(applicationDeadline)s, %(isRemoteWork)s, %(jobUrl)s
+                INSERT INTO job_available(name, description, company, type, published_date, dead_line_date, is_remote, url, website, job_id)
+                SELECT %(name)s, %(description)s, %(careerPageName)s, %(type)s, %(publishedDate)s, %(applicationDeadline)s, %(isRemoteWork)s, %(jobUrl)s, %(website)s, %(id)s
                 WHERE NOT EXISTS (
                     SELECT 1 FROM job_available 
                     WHERE url = %(jobUrl)s
                 )
-                RETURNING name, is_remote, published_date, company, url;
+                RETURNING name, is_remote, published_date, company, url, website, job_id;
             """, job_info)
             current_result: dict[str, str] = self.__cur.fetchone()
             if current_result:
                 new_jobs.append(current_result)
                 self.__con.commit()
         return new_jobs
+
+    def is_job_in_database(self, job_id: str) -> bool:
+        self.__cur.execute("""SELECT * from job_available 
+                            WHERE job_id = %s""", (job_id, ))
+        find: None | dict[str, str] = self.__cur.fetchone()
+        if find:
+            return True
+        return False
+
+    def close(self):
+        self.__cur.close()
+        self.__con.close()

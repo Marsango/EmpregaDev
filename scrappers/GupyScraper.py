@@ -15,10 +15,13 @@ class GupyScraper:
         while (True):
             data: list[dict[str, Any]] = requests.get(
                 f"https://portal.api.gupy.io/api/v1/jobs?jobName={job_name.lower()}&isRemoteWork={str(remote).lower()}&offset={offset}").json()
+            if len(data["data"]) == 0:
+                break
             for job in data["data"]:
                 if datetime.strptime(str(job['publishedDate']), "%Y-%m-%dT%H:%M:%S.%fZ").date() < start_date:
                     reach_limit_date = True
                     break
+                job["website"] = "gupy"
                 filtered_job_list.append(job)
             if reach_limit_date:
                 break
