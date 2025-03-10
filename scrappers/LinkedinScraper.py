@@ -4,14 +4,39 @@ import traceback
 from datetime import datetime
 from linkedin_api import Linkedin
 from scrappers.Database import Database
-from settings import LINKEDIN_EMAIL, LINKEDIN_PASSWORD
+from settings import LINKEDIN_EMAIL, LINKEDIN_PASSWORD, use_cookies
+from requests.cookies import RequestsCookieJar, create_cookie
+from linkedin_api.cookie_repository import CookieRepository
+import json
 
 
 class LinkedinScraper:
     def __init__(self) -> None:
-        if not (LINKEDIN_EMAIL and LINKEDIN_PASSWORD):
-            raise ImportError("Cannot import LINKEDIN_EMAIL and LINKEDIN_PASSWORD from settings.py")
-        self.__api: Linkedin = Linkedin(LINKEDIN_EMAIL, LINKEDIN_PASSWORD, refresh_cookies=True)
+        if use_cookies:
+            cookies = json.load(open('./cookies.json'))
+            cookie_jar = RequestsCookieJar()
+            for cookie_data in cookies:
+                cookie = create_cookie(
+                    domain=cookie_data["domain"],
+                    name=cookie_data["name"],
+                    value=cookie_data["value"],
+                    path=cookie_data["path"],
+                    secure=cookie_data["secure"],
+                    expires=cookie_data.get("expirationDate", None),
+                    rest={
+                        "HttpOnly": cookie_data.get("httpOnly", False),
+                        "SameSite": cookie_data.get("sameSite", "unspecified"),
+                        "HostOnly": cookie_data.get("hostOnly", False),
+                    }
+                )
+                cookie_jar.set_cookie(cookie)
+            new_repo = CookieRepository()
+            new_repo.save(cookie_jar, '')
+            self.__api: Linkedin = Linkedin("", "", cookies=cookie_jar)
+        else:
+            if not (LINKEDIN_EMAIL and LINKEDIN_PASSWORD):
+                raise ImportError("Cannot import LINKEDIN_EMAIL and LINKEDIN_PASSWORD from settings.py")
+            self.__api: Linkedin = Linkedin(username=LINKEDIN_EMAIL, password=LINKEDIN_PASSWORD, refresh_cookies=True)
 
     def search_jobs(self, job_name: str, listed_at: int) -> list[dict[str, str]]:
         db: Database = Database()
@@ -41,7 +66,7 @@ class LinkedinScraper:
                             "id": f"{job_id}"
                         }
                         if details.get("applyMethod").get("com.linkedin.voyager.jobs.OffsiteApply"):
-                            new_job["jobUrl"] = details.get("applyMethod").get("com.linkedin.voyager.jobs.OffsiteApply").get("companyApplyUrl")
+                            new_job["jobUrl"] = details.get("applyMethod").get("com.linkedin.voyager.jobs.OffsiteApply").get("companyApplyUrl").replace("?jobBoardSource=linkedin", "")
                         elif details.get("applyMethod").get("com.linkedin.voyager.jobs.ComplexOnsiteApply"):
                             new_job["jobUrl"] = details.get("applyMethod").get("com.linkedin.voyager.jobs.ComplexOnsiteApply").get("easyApplyUrl")
                         elif details.get("applyMethod").get('com.linkedin.voyager.jobs.SimpleOnsiteApply'):

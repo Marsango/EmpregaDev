@@ -12,5 +12,3 @@ class TelegramBot:
             "text": message
         }
         response = requests.get(f"https://api.telegram.org/bot{self.__api_key}/sendMessage", params=params)
-        print(response)
-        print(response.text)

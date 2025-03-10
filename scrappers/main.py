@@ -14,7 +14,7 @@ class ScrapHandler:
         self.__jobs_names: list[str] = jobs_names
         self.__remote: bool = remote
         self.__telegram_bot = TelegramBot()
-        # self.__linkedin: LinkedinScraper = LinkedinScraper()
+        self.__linkedin: LinkedinScraper = LinkedinScraper()
 
     def find_gupy_new_jobs(self) -> None:
         available_jobs: list[dict[str, Any]] = []
@@ -49,7 +49,7 @@ class ScrapHandler:
 if __name__ == '__main__':
     job_finder: ScrapHandler = ScrapHandler()
     job_finder.find_gupy_new_jobs()
-    # job_finder.find_linkedin_new_jobs(listed_at=86400)
+    job_finder.find_linkedin_new_jobs(listed_at=30400)
     iterations: int = 0
     while True:
         hour_now: datetime = datetime.now()
@@ -59,6 +59,6 @@ if __name__ == '__main__':
         job_finder.find_gupy_new_jobs()
         iterations += 1
         if iterations == 3:
-            # job_finder.find_linkedin_new_jobs(listed_at=10800)
+            job_finder.find_linkedin_new_jobs(listed_at=10800)
             iterations = 0
         print(f"Last update: {datetime.now()}")

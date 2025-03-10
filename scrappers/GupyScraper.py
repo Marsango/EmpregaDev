@@ -22,6 +22,7 @@ class GupyScraper:
                     reach_limit_date = True
                     break
                 job["website"] = "gupy"
+                job["jobUrl"] = job["jobUrl"].replace("?jobBoardSource=gupy_portal", "")
                 filtered_job_list.append(job)
             if reach_limit_date:
                 break

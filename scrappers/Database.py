@@ -31,6 +31,12 @@ class Database:
                     SELECT 1 FROM job_available 
                     WHERE url = %(jobUrl)s
                 )
+                AND NOT EXISTS (
+                    SELECT 1 FROM job_available 
+                    WHERE company = %(careerPageName)s 
+                      AND name = %(name)s 
+                      AND published_date = %(publishedDate)s
+                )
                 RETURNING name, is_remote, published_date, company, url, website, job_id;
             """, job_info)
             current_result: dict[str, str] = self.__cur.fetchone()
