@@ -49,16 +49,14 @@ class ScrapHandler:
 if __name__ == '__main__':
     job_finder: ScrapHandler = ScrapHandler()
     job_finder.find_gupy_new_jobs()
-    job_finder.find_linkedin_new_jobs(listed_at=30400)
+    job_finder.find_linkedin_new_jobs(listed_at=10800)
     iterations: int = 0
+    print(f"Last update: {datetime.now()}")
     while True:
         hour_now: datetime = datetime.now()
         next_hour: datetime = (hour_now + timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
         time_till_next_hour = (next_hour - hour_now).total_seconds()
         time.sleep(time_till_next_hour)
         job_finder.find_gupy_new_jobs()
-        iterations += 1
-        if iterations == 3:
-            job_finder.find_linkedin_new_jobs(listed_at=10800)
-            iterations = 0
+        job_finder.find_linkedin_new_jobs(listed_at=10800)
         print(f"Last update: {datetime.now()}")

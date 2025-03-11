@@ -3,6 +3,8 @@ from typing import Any
 
 import requests
 
+from scrappers.settings import forbidden_words
+
 
 class GupyScraper:
     def __int__(self) -> None:
@@ -23,6 +25,13 @@ class GupyScraper:
                     break
                 job["website"] = "gupy"
                 job["jobUrl"] = job["jobUrl"].replace("?jobBoardSource=gupy_portal", "")
+                have_forbidden_words: bool = False
+                for word in forbidden_words:
+                    if word.lower() in job["name"].lower():
+                        have_forbidden_words = True
+                        break
+                if have_forbidden_words:
+                    continue
                 filtered_job_list.append(job)
             if reach_limit_date:
                 break

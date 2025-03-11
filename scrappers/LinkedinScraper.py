@@ -4,7 +4,7 @@ import traceback
 from datetime import datetime
 from linkedin_api import Linkedin
 from scrappers.Database import Database
-from settings import LINKEDIN_EMAIL, LINKEDIN_PASSWORD, use_cookies
+from settings import LINKEDIN_EMAIL, LINKEDIN_PASSWORD, use_cookies, forbidden_words
 from requests.cookies import RequestsCookieJar, create_cookie
 from linkedin_api.cookie_repository import CookieRepository
 import json
@@ -42,18 +42,24 @@ class LinkedinScraper:
         db: Database = Database()
         new_job_list: list[dict[str, str]] = []
         search_params = {
-                "keywords": f'\"{job_name}\" -joinrs -bairesdev -netvagas',
+                "keywords": f'\"{job_name}\" -joinrs -bairesdev -netvagas -turing',
                 "remote": ["2"],
                 "listed_at": listed_at,
             }
         try:
             jobs = self.__api.search_jobs(**search_params)
-
             for job in jobs:
                 try:
                     job_id = job["entityUrn"].split(":")[-1]
                     is_job_in_database = db.is_job_in_database(str(job_id))
-                    if not is_job_in_database:
+                    have_forbidden_words: bool = False
+                    for word in forbidden_words:
+                        if word.lower() in job['title'].lower():
+                            have_forbidden_words = True
+                            break
+                    if have_forbidden_words:
+                        continue
+                    if not is_job_in_database and not job['repostedJob']:
                         details = self.__api.get_job(job_id)
                         new_job: dict[str, str] = {
                             "name": details.get('title', None),
