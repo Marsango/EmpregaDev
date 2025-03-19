@@ -11,7 +11,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch("lhttp://localhost:8080/")
+    fetch("http://localhost:8080/jobs")
       .then((response) => response.json())
       .then((data) => {
         setData(data);

@@ -11,19 +11,21 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/jackc/pgx/v5/pgxpool"
     "github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
+	
 )
 
 var db *pgxpool.Pool
 
 type Job struct {
-	ID int
-	Name string
-	Company string
-	PublishedDate time.Time
-	DeadLineDate time.Time
-	IsRemote bool
-	Url string
-	Website string
+		ID             int       `json:"id"`
+		Name           string    `json:"name"`
+		Company        string    `json:"company"`
+		PublishedDate  time.Time `json:"published_date"`
+		DeadLineDate   time.Time `json:"dead_line_date"`
+		IsRemote       bool      `json:"is_remote"`
+		Url            string    `json:"url"`
+		Website        string    `json:"website"`	
 }
 
 func createDatabaseConnection() error {
@@ -57,12 +59,20 @@ func main() {
 	defer db.Close()
 
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 	router.GET("/jobs", getJobs)
 	router.Run("localhost:8080")
 }
 
 func getJobs(c *gin.Context){
-	rows, err := db.Query(context.Background(), "SELECT id, name, company, published_date, dead_line_date, is_remote, url, website from job_available")
+	rows, err := db.Query(context.Background(), "SELECT id, name, company, published_date, dead_line_date, is_remote, url, website from job_available ORDER BY published_date DESC")
 	if err != nil {
         c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err})
 		return

@@ -1,5 +1,18 @@
 import { useState } from "react";
 
+function formatDate(isoString) {
+  const date = new Date(isoString);
+
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const year = date.getUTCFullYear();
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+
+  return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
+
+
 export default function Table({ data }) {
   return (
     <div className="table-container">
@@ -15,13 +28,12 @@ export default function Table({ data }) {
         </thead>
         <tbody>
           {data.map((job) => (
-            <tr>
-              <td>{job.title}</td>
-              <td>{job.name}</td>
+            <tr id={job.id}>
+              <td className="name-data">{job.name}</td>
               <td>{job.company}</td>
-              <td>{job.published_date}</td>
+              <td>{formatDate(job.published_date)}</td>
               <td>
-                <a href={job.link}>Link</a>
+                <a href={job.url} target="_blank">Link</a>
               </td>
               <td>{job.website}</td>
             </tr>

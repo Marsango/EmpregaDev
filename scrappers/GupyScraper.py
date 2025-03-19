@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any
 
 import requests
@@ -25,6 +25,8 @@ class GupyScraper:
                     break
                 job["website"] = "gupy"
                 job["jobUrl"] = job["jobUrl"].replace("?jobBoardSource=gupy_portal", "")
+                if job["applicationDeadLine"] is None:
+                    job["applicationDeadLine"] = datetime.strptime(str(job['publishedDate']), "%Y-%m-%dT%H:%M:%S.%fZ").date() + timedelta(30)
                 have_forbidden_words: bool = False
                 for word in forbidden_words:
                     if word.lower() in job["name"].lower():
