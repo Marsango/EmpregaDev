@@ -30,7 +30,8 @@ jobs_names: list[str] = ["Programador",
                          ]  # word for job searching
 forbidden_words: list[str] = ["Arquitetura", "Marketing", "Design", "Direito", "Atendimento", "Suporte", "Artes",
                               "Fiscal", "Customer Service", "Customer Success", "Jurídico", "Comercial", "Midia",
-                              "Acadêmico",
+                              "Acadêmico", "CRO", "Administrativo", "Geoprocessamento", "Recrutamento", "RH", "Merchandising", "Monitoramento",
+                              "Mídia", "Finops", "LDR",  "Administração", "Psicologia", "Ensino Médio", "Regulatório"
                               "Contábil", "Contabilidade", "Negócios", "Social Media", "Comunicação",
                               "Experiência do Cliente",
                               "Conteúdo", "Tutor", "Educacional", "Ouvidoria", "Professor", "Sales", "Business",

@@ -3,7 +3,7 @@ from typing import Any
 
 import requests
 
-from scrappers.settings import forbidden_words
+from settings import forbidden_words
 
 
 class GupyScraper:
@@ -25,8 +25,8 @@ class GupyScraper:
                     break
                 job["website"] = "gupy"
                 job["jobUrl"] = job["jobUrl"].replace("?jobBoardSource=gupy_portal", "")
-                if job["applicationDeadLine"] is None:
-                    job["applicationDeadLine"] = datetime.strptime(str(job['publishedDate']), "%Y-%m-%dT%H:%M:%S.%fZ").date() + timedelta(30)
+                if job["applicationDeadline"] is None:
+                    job["applicationDeadline"] = datetime.strptime(str(job['publishedDate']), "%Y-%m-%dT%H:%M:%S.%fZ").date() + timedelta(30)
                 have_forbidden_words: bool = False
                 for word in forbidden_words:
                     if word.lower() in job["name"].lower():

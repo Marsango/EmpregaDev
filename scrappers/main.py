@@ -4,7 +4,7 @@ from typing import Any
 from GupyScraper import GupyScraper
 from Database import Database
 from settings import jobs_names, remote
-from telegram.TelegramBot import TelegramBot
+from TelegramBot import TelegramBot
 from LinkedinScraper import LinkedinScraper
 
 

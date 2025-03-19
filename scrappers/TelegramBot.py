@@ -1,5 +1,5 @@
 import requests
-from scrappers.settings import api_key_telegram, channel_id
+from settings import api_key_telegram, channel_id
 
 class TelegramBot:
     def __init__(self) -> None:

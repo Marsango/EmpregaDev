@@ -1,9 +1,8 @@
-
 import time
 import traceback
 from datetime import datetime, timedelta
 from linkedin_api import Linkedin
-from scrappers.Database import Database
+from Database import Database
 from settings import LINKEDIN_EMAIL, LINKEDIN_PASSWORD, use_cookies, forbidden_words
 from requests.cookies import RequestsCookieJar, create_cookie
 from linkedin_api.cookie_repository import CookieRepository
