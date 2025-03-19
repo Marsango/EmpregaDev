@@ -1,0 +1,101 @@
+header {
+  display: flex;
+  justify-content: center;
+  background-color: none;
+}
+
+body {
+  background-color: #0d1b2a;
+}
+
+.logo-img {
+  background-color: none;
+}
+
+.search-bar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-bar {
+  background-color: #e0e1dd;
+  border: none;
+  border-radius: 4px;
+  width: 400px;
+  height: 30px;
+  padding: 2px 2px 2px 20px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #415a77;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.7);
+}
+
+.search-bar:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.loading-container{
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Roboto, sans-serif;
+  font-size: 30px;
+  color: #e0e1dd;
+}
+
+.search-options {
+  background-color: #e0e1dd;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #415a77;
+  width: 80px;
+  height: 36px;
+  margin-left: -3px;
+  padding: 2px 2px 2px 2px;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.7);
+  color: black;
+}
+
+.table-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+}
+
+.job-table th {
+  background-color: #415a77;
+  padding: 5px 30px 5px 30px;
+  font-family: Roboto, sans-serif;
+  color: #e0e1dd;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.job-table{
+  margin-top: 50px;
+  border: none;
+  box-shadow: 0 0px 20px rgba(0, 0, 0, 0.7);
+  border-collapse: collapse;
+}
+
+.job-table td {
+  color: #0d1b2a;
+  padding: 5px 30px 5px 30px;
+  font-family: Roboto, sans-serif;
+  text-align: center;
+  border-bottom: 0.5px solid #dddddd;
+}
+
+.job-table tbody tr{
+  background-color: #f3f3f3;
+}
+
+.job-table tbody tr:nth-of-type(even) {
+  background-color: #e0e0e0;
+}
