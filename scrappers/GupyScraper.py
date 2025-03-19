@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from typing import Any
+from zoneinfo import ZoneInfo
 
 import requests
 
@@ -27,6 +28,10 @@ class GupyScraper:
                 job["jobUrl"] = job["jobUrl"].replace("?jobBoardSource=gupy_portal", "")
                 if job["applicationDeadline"] is None:
                     job["applicationDeadline"] = datetime.strptime(str(job['publishedDate']), "%Y-%m-%dT%H:%M:%S.%fZ").date() + timedelta(30)
+                job["publishedDate"] = datetime.strptime(str(job['publishedDate']), "%Y-%m-%dT%H:%M:%S.%fZ").replace(
+                    tzinfo=ZoneInfo("UTC")).astimezone(ZoneInfo("America/Sao_Paulo"))
+                job["applicationDeadline"] = datetime.strptime(str(job['applicationDeadline']), "%Y-%m-%dT%H:%M:%S.%fZ").replace(
+                    tzinfo=ZoneInfo("UTC")).astimezone(ZoneInfo("America/Sao_Paulo"))
                 have_forbidden_words: bool = False
                 for word in forbidden_words:
                     if word.lower() in job["name"].lower():

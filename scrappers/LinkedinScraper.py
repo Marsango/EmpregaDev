@@ -64,8 +64,8 @@ class LinkedinScraper:
                             "name": details.get('title', None),
                             "description": details.get('description').get('text'),
                             "type": None,
-                            "publishedDate": datetime.fromtimestamp(details.get("listedAt", None)/1000).date(),
-                            "applicationDeadline": datetime.fromtimestamp(details.get("listedAt", None)/1000).date() + timedelta(30),
+                            "publishedDate": datetime.fromtimestamp(details.get("listedAt", None)/1000),
+                            "applicationDeadline": datetime.fromtimestamp(details.get("listedAt", None)/1000) + timedelta(30),
                             "isRemoteWork": details.get('workRemoteAllowed', None),
                             "website": "linkedin",
                             "id": f"{job_id}"

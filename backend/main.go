@@ -72,7 +72,7 @@ func main() {
 }
 
 func getJobs(c *gin.Context){
-	rows, err := db.Query(context.Background(), "SELECT id, name, company, published_date, dead_line_date, is_remote, url, website from job_available ORDER BY published_date DESC")
+	rows, err := db.Query(context.Background(), "SELECT id, name, company, published_date, dead_line_date, is_remote, url, website from available_job ORDER BY published_date DESC")
 	if err != nil {
         c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err})
 		return

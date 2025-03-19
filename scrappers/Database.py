@@ -12,12 +12,12 @@ class Database:
 
     def setup_database(self) -> None:
         self.__cur.execute(
-            "CREATE TABLE IF NOT EXISTS job_available(id SERIAL PRIMARY KEY, name varchar(255), description text,"
-            "company varchar(255), type varchar(255), published_date date, dead_line_date date, is_remote boolean,"
+            "CREATE TABLE IF NOT EXISTS available_job(id SERIAL PRIMARY KEY, name varchar(255), description text,"
+            "company varchar(255), type varchar(255), published_date timestamp, dead_line_date timestamp, is_remote boolean,"
             "url text, website varchar(255), job_id varchar(255))")
         self.__cur.execute(
             "CREATE TABLE IF NOT EXISTS past_available_job(id SERIAL PRIMARY KEY, name varchar(255), description text,"
-            "company varchar(255), type varchar(255), published_date date, dead_line_date date, is_remote boolean,"
+            "company varchar(255), type varchar(255), published_date timestamp, dead_line_date timestamp, is_remote boolean,"
             "url text, website varchar(255), job_id varchar(255))")
         self.__con.commit()
 
@@ -25,18 +25,18 @@ class Database:
         new_jobs: list[dict[str, str]] = []
         for job_info in job_list:
             self.__cur.execute("""
-                INSERT INTO job_available(name, description, company, type, published_date, dead_line_date, is_remote, url, website, job_id)
+                INSERT INTO available_job(name, description, company, type, published_date, dead_line_date, is_remote, url, website, job_id)
                 SELECT %(name)s, %(description)s, %(careerPageName)s, %(type)s, %(publishedDate)s, %(applicationDeadline)s, %(isRemoteWork)s, %(jobUrl)s, %(website)s, %(id)s
                 WHERE NOT EXISTS (
-                    SELECT 1 FROM job_available 
+                    SELECT 1 FROM available_job 
                     WHERE url = %(jobUrl)s
                 )
-                AND NOT EXISTS (
-                    SELECT 1 FROM job_available 
+                AND NOT EXISTS (                   
+                    SELECT 1 FROM available_job 
                     WHERE company = %(careerPageName)s 
-                      AND name = %(name)s 
-                      AND published_date = %(publishedDate)s
-                )
+                    AND name = %(name)s
+                    AND DATE_TRUNC('week', published_date) = DATE_TRUNC('week', %(publishedDate)s::DATE)                  
+                ) 
                 RETURNING name, is_remote, published_date, company, url, website, job_id;
             """, job_info)
             current_result: dict[str, str] = self.__cur.fetchone()
@@ -46,7 +46,7 @@ class Database:
         return new_jobs
 
     def is_job_in_database(self, job_id: str) -> bool:
-        self.__cur.execute("""SELECT * from job_available 
+        self.__cur.execute("""SELECT * from available_job 
                             WHERE job_id = %s""", (job_id, ))
         find: None | dict[str, str] = self.__cur.fetchone()
         if find:

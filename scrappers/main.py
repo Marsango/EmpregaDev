@@ -30,7 +30,7 @@ class ScrapHandler:
     def send_new_jobs_message(self, new_jobs: list[dict[str, str]]) -> None:
         for i, new_job in enumerate(new_jobs):
             message: str = (
-                f"Nome: {new_job['name']}\nRemoto: {'Sim' if new_job['is_remote'] else 'Não'}\nAbertura: {new_job['published_date']}\n"
+                f"Nome: {new_job['name']}\nRemoto: {'Sim' if new_job['is_remote'] else 'Não'}\nAbertura: {new_job['published_date'].strftime('%d/%m/%Y %H:%M')}\n"
                 f"Empresa: {new_job['company']}\nLink: {new_job['url']}")
             if new_job['website'] == 'linkedin':
                 message += f"\nLink2: https://www.linkedin.com/jobs/view/{new_job['job_id']}/"
