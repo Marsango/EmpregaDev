@@ -23,6 +23,7 @@ class ScrapHandler:
             available_jobs.extend(self.__gupy.search_available_jobs_offers(start_date=datetime.today().date(),
                                                                            remote=self.__remote, job_name=job_name))
         db: Database = Database()
+        print(f"Found {len(available_jobs)} jobs in gupy!")
         self.send_new_jobs_message(db.insert_new_jobs(available_jobs))
         db.close()
 
@@ -42,6 +43,9 @@ class ScrapHandler:
             print(f"Searching for {job_name} in Linkedin...")
             available_jobs: list[dict[str, Any]] = self.__linkedin.search_jobs(job_name=job_name, listed_at=listed_at)
             db: Database = Database()
+            for job in available_jobs:
+                print(job["name"])
+            print(f"Found {len(available_jobs)} {job_name} jobs in Linkedin!")
             self.send_new_jobs_message(db.insert_new_jobs(available_jobs))
             db.close()
 
@@ -49,7 +53,7 @@ class ScrapHandler:
 if __name__ == '__main__':
     job_finder: ScrapHandler = ScrapHandler()
     job_finder.find_gupy_new_jobs()
-    job_finder.find_linkedin_new_jobs(listed_at=10800)
+    job_finder.find_linkedin_new_jobs(listed_at=86400)
     iterations: int = 0
     print(f"Last update: {datetime.now()}")
     while True:
@@ -58,5 +62,5 @@ if __name__ == '__main__':
         time_till_next_hour = (next_hour - hour_now).total_seconds()
         time.sleep(time_till_next_hour)
         job_finder.find_gupy_new_jobs()
-        job_finder.find_linkedin_new_jobs(listed_at=10800)
+        job_finder.find_linkedin_new_jobs(listed_at=11800)
         print(f"Last update: {datetime.now()}")

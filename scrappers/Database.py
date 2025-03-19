@@ -56,3 +56,5 @@ class Database:
     def close(self):
         self.__cur.close()
         self.__con.close()
+
+

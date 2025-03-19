@@ -80,3 +80,4 @@ func getJobs(c *gin.Context){
     }
     c.IndentedJSON(http.StatusOK, jobs)
 }
+

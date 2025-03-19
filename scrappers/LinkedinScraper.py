@@ -1,7 +1,7 @@
 
 import time
 import traceback
-from datetime import datetime
+from datetime import datetime, timedelta
 from linkedin_api import Linkedin
 from scrappers.Database import Database
 from settings import LINKEDIN_EMAIL, LINKEDIN_PASSWORD, use_cookies, forbidden_words
@@ -32,7 +32,7 @@ class LinkedinScraper:
                 cookie_jar.set_cookie(cookie)
             new_repo = CookieRepository()
             new_repo.save(cookie_jar, '')
-            self.__api: Linkedin = Linkedin("", "", cookies=cookie_jar)
+            self.__api: Linkedin = Linkedin("", "", cookies=cookie_jar, refresh_cookies=True)
         else:
             if not (LINKEDIN_EMAIL and LINKEDIN_PASSWORD):
                 raise ImportError("Cannot import LINKEDIN_EMAIL and LINKEDIN_PASSWORD from settings.py")
@@ -66,16 +66,14 @@ class LinkedinScraper:
                             "description": details.get('description').get('text'),
                             "type": None,
                             "publishedDate": datetime.fromtimestamp(details.get("listedAt", None)/1000).date(),
-                            "applicationDeadline": None,
+                            "applicationDeadline": datetime.fromtimestamp(details.get("listedAt", None)/1000).date() + timedelta(30),
                             "isRemoteWork": details.get('workRemoteAllowed', None),
                             "website": "linkedin",
                             "id": f"{job_id}"
                         }
                         if details.get("applyMethod").get("com.linkedin.voyager.jobs.OffsiteApply"):
                             new_job["jobUrl"] = details.get("applyMethod").get("com.linkedin.voyager.jobs.OffsiteApply").get("companyApplyUrl").replace("?jobBoardSource=linkedin", "")
-                        elif details.get("applyMethod").get("com.linkedin.voyager.jobs.ComplexOnsiteApply"):
-                            new_job["jobUrl"] = details.get("applyMethod").get("com.linkedin.voyager.jobs.ComplexOnsiteApply").get("easyApplyUrl")
-                        elif details.get("applyMethod").get('com.linkedin.voyager.jobs.SimpleOnsiteApply'):
+                        elif details.get("applyMethod").get('com.linkedin.voyager.jobs.SimpleOnsiteApply') or details.get("applyMethod").get("com.linkedin.voyager.jobs.ComplexOnsiteApply"):
                             new_job["jobUrl"] = f"https://www.linkedin.com/jobs/view/{job_id}/"
                         if details.get('companyDetails').get('com.linkedin.voyager.deco.jobs.web.shared.WebCompactJobPostingCompany'):
                             new_job["careerPageName"] = details.get('companyDetails', {}).get('com.linkedin.voyager.deco.jobs.web.shared.WebCompactJobPostingCompany').get("companyResolutionResult").get("name")
