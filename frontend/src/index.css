@@ -77,6 +77,10 @@ body {
   z-index: 1;
 }
 
+.job-table thead{
+  border-radius: 16px;
+}
+
 .job-table{
   margin-top: 50px;
   border: none;
@@ -84,20 +88,17 @@ body {
   border-collapse: collapse;
 }
 
-.job-table .name-data{
-  max-width: 400px;
-}
-
 .job-table td {
   color: #0d1b2a;
-  padding: 5px 5px 5px 5px;
+  padding: 5px 30px 5px 30px;
   font-family: Roboto, sans-serif;
   text-align: center;
-  border-bottom: 0.5px solid #dddddd; 
-  max-width: 50px;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
+  border-bottom: 0.5px solid #dddddd;
+}
+
+.job-table tr:hover{
+    background: rgba(255, 255, 255, 0.1);
+    transition: 0.3s;
 }
 
 .job-table tbody tr{
